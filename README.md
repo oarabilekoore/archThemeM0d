@@ -4,8 +4,6 @@
 
 Powered by Go, it intelligently extracts a color palette and builds a full, Material You-inspired tonal system. This ensures that your Waybar, Rofi, and other supported applications always look beautiful and perfectly matched to your desktop environment.
 
----
-
 ## ✨ Core Features
 
 - Wallpaper-Based Generation: Automatically creates a rich color palette from your current wallpaper.
@@ -15,7 +13,6 @@ Powered by Go, it intelligently extracts a color palette and builds a full, Mate
 - Cohesive Desktop Experience: Ensures all themed applications share a single, harmonious, and professionally designed color scheme.
 - Fast & Efficient: Written in Go for excellent performance.
 
----
 
 ## 🚀 How It Works
 
