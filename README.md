@@ -1,4 +1,4 @@
-# ArchThemeM0d Documentation 🎨
+# ArchThemeM0d
 
 *ArchThemeM0d* is a dynamic theming engine for Arch Linux with Hyprland that automatically generates stunning, cohesive application themes directly from your current wallpaper.
 
