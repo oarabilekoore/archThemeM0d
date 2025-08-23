@@ -1,0 +1,107 @@
+* {
+    font-family: "JetBrainsMono Nerd Font Propo", sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 1px;
+}
+
+/* Bar background uses a dark, neutral surface color */
+window#waybar {
+    background-color: {{ .Theme.Surface | toHex }};
+    color: {{ .Theme.OnSurface | toHex }}; /* Main text color */
+    border-radius: 1px;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+/* Workspaces module background */
+#workspaces {
+    margin: 5px;
+    background-color: {{ .Theme.SurfaceVariant | toHex }};
+    border-radius: 1px;
+}
+
+#workspaces button {
+    padding: 0 5px;
+    background-color: transparent;
+    /* UPDATED: Use the primary-infused text color */
+    color: {{ .Theme.OnSurface | toHex }};
+    border-radius: 1px;
+}
+
+#workspaces button:hover {
+    background: {{ toRgba (tone .Theme.Primary 80) "0.3" }};
+}
+
+/* Focused workspace uses the main Primary color */
+#workspaces button.focused {
+    background-color: {{ (tone .Theme.Primary 80) | toHex }};
+    box-shadow: inset 0 -3px {{ (tone .Theme.Primary 40) | toHex }};
+    color: {{ (tone .Theme.Primary 20) | toHex }}; /* Text on Primary */
+}
+
+#workspaces button.active {
+    background-color: {{ (tone .Theme.Primary 80) | toHex }};
+    color: {{ (tone .Theme.Primary 20) | toHex }};
+}
+
+#workspaces button.empty {
+    color: {{ toRgba .Theme.OnSurfaceVariant "0.5" }};
+}
+
+/* Common module block style */
+#memory, #cpu, #battery, #clock, #pulseaudio, #custom-brightness,
+#custom-verse, #custom-powerprofile, #bluetooth, #network,
+#custom-bluetooth-tui, #mpris, #tray, #disk, #custom-weather,
+#custom-expand-icon {
+    background-color: {{ .Theme.SurfaceVariant | toHex }};
+    /* UPDATED: Use the primary-infused text color for all modules */
+    color: {{ .Theme.OnSurface | toHex }};
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 5px 5px 5px 0;
+    border-radius: 1px;
+    min-width: 32px;
+    min-height: 26px;
+}
+
+/* Highlight with the Tertiary color for variety */
+#custom-brightness {
+    color: {{ (tone .Theme.Tertiary 80) | toHex }};
+}
+
+#pulseaudio.muted {
+    color: {{ toRgba .Theme.OnSurfaceVariant "0.5" }};
+}
+
+/* Battery states use the tonal palettes for semantic color */
+#battery.charging { color: {{ (tone .Theme.Primary 80) | toHex }}; }
+#battery.warning { color: {{ (tone .Theme.Secondary 80) | toHex }}; }
+#battery.critical { color: #f38ba8; } /* Use a fixed, known red for critical error */
+
+@keyframes blink {
+    to {
+        background-color: #f38ba8; /* Fixed red */
+        color: #11111b; /* Fixed dark text */
+    }
+}
+
+#network.disconnected {
+    color: #f38ba8; /* Fixed red */
+}
+
+/* MPRIS states */
+#mpris.playing {
+    color: {{ (tone .Theme.Tertiary 80) | toHex }};
+}
+
+#mpris.paused {
+    /* UPDATED: Use the primary-infused text color for paused state */
+    color: {{ .Theme.OnSurface | toHex }};
+}
+
+#custom-expand-icon {
+    margin-right: 7px;
+}

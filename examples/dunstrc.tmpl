@@ -1,0 +1,129 @@
+[global]
+    monitor = 0
+    follow = none
+
+    # Geometry
+    width = 300
+    height = 300
+    origin = top-center
+    offset = 10x15
+    scale = 0
+    notification_limit = 0
+
+    # Progress bar
+    progress_bar = true
+    progress_bar_height = 10
+    progress_bar_frame_width = 1
+    progress_bar_min_width = 150
+    progress_bar_max_width = 300
+
+    indicate_hidden = yes
+    transparency = 0
+    separator_height = 2
+    padding = 8
+    horizontal_padding = 8
+    text_icon_padding = 0
+    frame_width = 3
+    # Default frame color uses the main Primary accent
+    frame_color = "{{ (tone .Theme.Primary 80) | toHex }}"
+
+    # Separators
+    separator_color = frame
+    sort = yes
+
+    # Text
+    font = JetBrains Mono 10
+    line_height = 0
+    markup = full
+
+    # Format
+    format = "<b>%s</b>\n%b"
+    alignment = left
+    vertical_alignment = center
+    show_age_threshold = 60
+    ellipsize = middle
+    ignore_newline = no
+    stack_duplicates = true
+    hide_duplicate_count = false
+    show_indicators = yes
+
+    # Icons
+    icon_position = left
+    min_icon_size = 0
+    max_icon_size = 32
+
+    # History
+    sticky_history = yes
+    history_length = 20
+
+    # Misc/Advanced
+    dmenu = /usr/bin/dmenu -p dunst:
+    browser = /usr/bin/xdg-open
+    always_run_script = true
+    title = Dunst
+    class = Dunst
+    corner_radius = 0
+    ignore_dbusclose = false
+
+    # Wayland
+    force_xwayland = false
+
+    # Legacy
+    force_xinerama = false
+
+    # Mouse
+    mouse_left_click = close_current
+    mouse_middle_click = do_action, close_current
+    mouse_right_click = close_all
+
+[experimental]
+    per_monitor_dpi = false
+
+[urgency_low]
+    # IMPORTANT: colors have to be defined in quotation marks.
+    background = "{{ .Theme.SurfaceVariant | toHex }}"
+    foreground = "{{ .Theme.OnSurface | toHex }}"
+    # Use a subtle Tertiary color for the frame
+    frame_color = "{{ (tone .Theme.Tertiary 60) | toHex }}"
+    timeout = 10
+
+[urgency_normal]
+    background = "{{ .Theme.SurfaceVariant | toHex }}"
+    foreground = "{{ .Theme.OnSurface | toHex }}"
+    # Use the main Primary accent for the frame
+    frame_color = "{{ (tone .Theme.Primary 80) | toHex }}"
+    timeout = 10
+
+[urgency_critical]
+    # Use a fixed, high-contrast red for critical alerts to ensure they are always noticeable.
+    background = "#f38ba8"
+    foreground = "#11111b"
+    frame_color = "#e64553"
+    timeout = 0
+
+# Custom rules
+[battery_low]
+    appname = "Battery"
+    urgency = critical
+    # Inherits the colors from [urgency_critical]
+    format = "<b>⚠ %s</b>\n%b"
+
+[volume]
+    appname = "Volume"
+    urgency = low
+    # Use the Tertiary accent for informational popups
+    background = "{{ (tone .Theme.Tertiary 80) | toHex }}"
+    foreground = "{{ (tone .Theme.Tertiary 10) | toHex }}"
+    frame_color = "{{ (tone .Theme.Tertiary 90) | toHex }}"
+    format = "<b>🔊 %s</b>\n%b"
+    timeout = 3
+
+[brightness]
+    appname = "Brightness"
+    urgency = low
+    # Use the Secondary accent for variety
+    background = "{{ (tone .Theme.Secondary 80) | toHex }}"
+    foreground = "{{ (tone .Theme.Secondary 10) | toHex }}"
+    frame_color = "{{ (tone .Theme.Secondary 90) | toHex }}"
+    format = "<b>💡 %s</b>\n%b"
+    timeout = 3

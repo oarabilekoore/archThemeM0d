@@ -1,0 +1,122 @@
+configuration {
+	modes: "drun";
+	font: "Monaspace Neon Frozen 12";
+	drun-display-format: "{name}";
+}
+
+* {
+    /* Define semantic colors from the Material theme */
+    background: {{ .Theme.Surface | toHex }};
+    background-alt: {{ .Theme.SurfaceVariant | toHex }};
+    foreground: {{ .Theme.OnSurface | toHex }};
+    foreground-alt: {{ .Theme.OnSurfaceVariant | toHex }};
+    accent: {{ (tone .Theme.Primary 80) | toHex }};
+    selected-bg: {{ (tone .Theme.Secondary 40) | toHex }};
+    selected-fg: {{ (tone .Theme.Secondary 90) | toHex }};
+    border-color-main: {{ (tone .Theme.Neutral 40) | toHex }};
+
+	/* Assign roles */
+	fg-highlight: @accent;
+	bg-entry: @background-alt;
+	fg-entry: @accent;
+	fg-placeholder: @foreground-alt;
+
+	bg-listview: @background;
+	fg-element: @foreground;
+
+	bg-element-selected: @selected-bg;
+	fg-element-selected: @selected-fg;
+	border-color-element-selected: @accent;
+
+	bg-inputbar: @background;
+	border-color: @border-color-main;
+    br: 2px;
+	border-size-window: 2px;
+	border-size-element-selected: 2px;
+
+	spacing: 0;
+}
+
+window {
+	background-color: transparent;
+	border: @border-size-window;
+	border-color: @border-color;
+	transparency: "real";
+	children: [mainbox];
+	border-radius: @br;
+	padding: 0;
+	width: 28%;
+}
+
+mainbox {
+    children: [inputbar, listview];
+    orientation: vertical;
+}
+
+inputbar {
+	children: [entry];
+	background-color: @bg-inputbar;
+}
+
+entry {
+	color: @fg-entry;
+	placeholder-color: @fg-placeholder;
+	background-color: @bg-entry;
+
+	text-transform: bold;
+	border-radius: @br;
+	padding: 12px;
+	margin: 10px;
+	border: 0;
+	vertical-align: 0.5;
+}
+
+listview {
+	background-color: @bg-listview;
+	scrollbar: false;
+	border: 0;
+	lines: 4;
+	padding: 10px;
+}
+
+element {
+	children: [element-icon, element-text];
+	spacing: 10px;
+	border-radius: @br;
+	background-color: transparent;
+}
+
+element-icon {
+	vertical-aling: 0.5;
+	margin: 0 0 0 10px;
+	background-color: transparent;
+}
+
+element-text {
+	vertical-align: 0.5;
+	text-transform: bold;
+	border-radius: @br;
+	/* CORRECTED: Use the standard foreground color for unselected items */
+	color: @fg-element;
+	highlight: @fg-highlight;
+	padding: 5px;
+	margin: 10px 10px 10px 0;
+	background-color: transparent;
+}
+
+element selected.normal {
+	background-color: @bg-element-selected;
+	border: @border-size-element-selected;
+	border-color: @border-color-element-selected;
+}
+
+element-text selected {
+	/* CORRECTED: Use the selected foreground color */
+	color: @fg-element-selected;
+	text-transform: bold;
+}
+
+element normal.normal,
+element alternate.normal {
+	background-color: transparent;
+}
