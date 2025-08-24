@@ -29,7 +29,7 @@ type ClassifiedTheme struct {
 	Tertiary  TonalPalette
 	Neutral   TonalPalette
 
-	// (Dark Theme context)
+	// Surface colors for dark theme
 	Surface          color.RGBA // App backgrounds
 	SurfaceVariant   color.RGBA // Cards, dialogs
 	OnSurface        color.RGBA // Text on Surface
@@ -38,12 +38,19 @@ type ClassifiedTheme struct {
 	OnPrimaryFixed   color.RGBA // Text on PrimaryFixed
 }
 
+// HCT represents a color in Hue, Chroma, Tone space (Material 3's color space)
+type HCT struct {
+	H float64 // Hue (0-360)
+	C float64 // Chroma (0-100+)
+	T float64 // Tone (0-100)
+}
+
 // colorMetrics is a helper struct for color analysis and sorting.
 type colorMetrics struct {
-	Color      color.RGBA
-	Luminance  float64
-	Saturation float64
-	Index      int
+	Color    color.RGBA
+	HCT      HCT
+	Vibrancy float64 // Combined chroma and tone score
+	Index    int
 }
 
 var templateFillCmd = &cobra.Command{
@@ -56,133 +63,290 @@ func init() {
 	rootCmd.AddCommand(templateFillCmd)
 }
 
-// rgbToHsl converts an RGB color to HSL values.
-// We use this to determine saturation and luminance for classification.
-func rgbToHsl(c color.RGBA) (h, s, l float64) {
+// rgbToHct converts RGB to HCT color space (Material 3's perceptual color space)
+func rgbToHct(c color.RGBA) HCT {
+	// First convert RGB to XYZ
 	r, g, b := float64(c.R)/255.0, float64(c.G)/255.0, float64(c.B)/255.0
-	max, min := math.Max(r, math.Max(g, b)), math.Min(r, math.Min(g, b))
-	l = (max + min) / 2.0
-	if max == min {
-		return 0, 0, l // Achromatic (gray)
-	}
-	d := max - min
-	if l > 0.5 {
-		s = d / (2.0 - max - min)
+
+	// Gamma correction
+	if r > 0.04045 {
+		r = math.Pow((r+0.055)/1.055, 2.4)
 	} else {
-		s = d / (max + min)
+		r = r / 12.92
 	}
-	switch max {
-	case r:
-		h = (g - b) / d
-		if g < b {
-			h += 6
-		}
-	case g:
-		h = (b-r)/d + 2
-	case b:
-		h = (r-g)/d + 4
+	if g > 0.04045 {
+		g = math.Pow((g+0.055)/1.055, 2.4)
+	} else {
+		g = g / 12.92
 	}
-	h /= 6
-	return h, s, l
+	if b > 0.04045 {
+		b = math.Pow((b+0.055)/1.055, 2.4)
+	} else {
+		b = b / 12.92
+	}
+
+	// Convert to XYZ
+	x := r*0.4124564 + g*0.3575761 + b*0.1804375
+	y := r*0.2126729 + g*0.7151522 + b*0.0721750
+	z := r*0.0193339 + g*0.1191920 + b*0.9503041
+
+	// Convert XYZ to LAB
+	xn, yn, zn := 0.95047, 1.0, 1.08883 // D65 illuminant
+	fx := labF(x / xn)
+	fy := labF(y / yn)
+	fz := labF(z / zn)
+
+	L := 116*fy - 16
+	A := 500 * (fx - fy)
+	B := 200 * (fy - fz)
+
+	// Convert LAB to HCT
+	chroma := math.Sqrt(A*A + B*B)
+	hue := math.Atan2(B, A) * 180 / math.Pi
+	if hue < 0 {
+		hue += 360
+	}
+
+	return HCT{
+		H: hue,
+		C: chroma,
+		T: L, // In HCT, Tone is equivalent to L* in LAB
+	}
 }
 
-// blendColor mixes two colors together based on a ratio.
-func blendColor(c1, c2 color.RGBA, ratio float64) color.RGBA {
-	ratio = math.Max(0, math.Min(1, ratio)) // Clamp ratio between 0 and 1
+func labF(t float64) float64 {
+	if t > 0.008856 {
+		return math.Pow(t, 1.0/3.0)
+	}
+	return (7.787*t + 16.0/116.0)
+}
+
+// hctToRgb converts HCT back to RGB
+func hctToRgb(hct HCT) color.RGBA {
+	// Convert HCT to LAB
+	L := hct.T
+	A := hct.C * math.Cos(hct.H*math.Pi/180)
+	B := hct.C * math.Sin(hct.H*math.Pi/180)
+
+	// Convert LAB to XYZ
+	fy := (L + 16) / 116
+	fx := A/500 + fy
+	fz := fy - B/200
+
+	var x, y, z float64
+	if fx*fx*fx > 0.008856 {
+		x = fx * fx * fx
+	} else {
+		x = (fx - 16.0/116.0) / 7.787
+	}
+	if fy*fy*fy > 0.008856 {
+		y = fy * fy * fy
+	} else {
+		y = (fy - 16.0/116.0) / 7.787
+	}
+	if fz*fz*fz > 0.008856 {
+		z = fz * fz * fz
+	} else {
+		z = (fz - 16.0/116.0) / 7.787
+	}
+
+	// Scale by illuminant
+	x *= 0.95047
+	y *= 1.0
+	z *= 1.08883
+
+	// Convert XYZ to RGB
+	r := x*3.2404542 + y*-1.5371385 + z*-0.4985314
+	g := x*-0.9692660 + y*1.8760108 + z*0.0415560
+	b := x*0.0556434 + y*-0.2040259 + z*1.0572252
+
+	// Gamma correction
+	if r > 0.0031308 {
+		r = 1.055*math.Pow(r, 1/2.4) - 0.055
+	} else {
+		r = 12.92 * r
+	}
+	if g > 0.0031308 {
+		g = 1.055*math.Pow(g, 1/2.4) - 0.055
+	} else {
+		g = 12.92 * g
+	}
+	if b > 0.0031308 {
+		b = 1.055*math.Pow(b, 1/2.4) - 0.055
+	} else {
+		b = 12.92 * b
+	}
+
+	// Clamp to [0,1] and convert to 0-255
+	r = math.Max(0, math.Min(1, r))
+	g = math.Max(0, math.Min(1, g))
+	b = math.Max(0, math.Min(1, b))
+
 	return color.RGBA{
-		R: uint8(float64(c1.R)*(1.0-ratio) + float64(c2.R)*ratio),
-		G: uint8(float64(c1.G)*(1.0-ratio) + float64(c2.G)*ratio),
-		B: uint8(float64(c1.B)*(1.0-ratio) + float64(c2.B)*ratio),
+		R: uint8(r * 255),
+		G: uint8(g * 255),
+		B: uint8(b * 255),
 		A: 255,
 	}
 }
 
-// generateTonalPalette creates a full 13-step tonal ramp from a single seed color.
-func generateTonalPalette(seed color.RGBA) TonalPalette {
+// calculateVibrancy calculates Material 3 style vibrancy score
+func calculateVibrancy(hct HCT) float64 {
+	// Material 3 considers both chroma and tone for vibrancy
+	// Higher chroma = more vibrant, tone around 50 = most vibrant
+	chromaWeight := hct.C / 100.0               // Normalize chroma
+	toneWeight := 1.0 - math.Abs(hct.T-50)/50.0 // Peak at tone 50
+	return chromaWeight*0.7 + toneWeight*0.3
+}
+
+// calculateHueDistance calculates the shortest distance between two hues
+func calculateHueDistance(h1, h2 float64) float64 {
+	diff := math.Abs(h1 - h2)
+	if diff > 180 {
+		diff = 360 - diff
+	}
+	return diff
+}
+
+// isHarmoniousHue checks if two hues are harmoniously related
+func isHarmoniousHue(primary, secondary float64) bool {
+	distance := calculateHueDistance(primary, secondary)
+	// Harmonious relationships: complementary (~180°), triadic (~120°), analogous (~30°)
+	return (distance >= 25 && distance <= 35) || // Analogous
+		(distance >= 115 && distance <= 125) || // Triadic
+		(distance >= 175 && distance <= 185) // Complementary
+}
+
+// generateTonalPaletteHct creates a Material 3 compliant tonal palette using HCT
+func generateTonalPaletteHct(seedHct HCT) TonalPalette {
 	tones := make(map[int]color.RGBA)
-	white := color.RGBA{R: 255, G: 255, B: 255, A: 255}
-	black := color.RGBA{R: 0, G: 0, B: 0, A: 255}
 
-	// For a dark theme, the seed color is considered Tone 80.
-	tones[80] = seed
-	tones[100] = white
-	tones[0] = black
+	// Material 3 tone levels
+	toneLevels := []int{0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 99, 100}
 
-	// Generate lighter tones by blending the seed with white.
-	tones[90] = blendColor(seed, white, 0.50)
-	tones[95] = blendColor(seed, white, 0.75)
-	tones[99] = blendColor(seed, white, 0.95)
+	for _, tone := range toneLevels {
+		// Keep hue and chroma, only change tone
+		newHct := HCT{
+			H: seedHct.H,
+			C: seedHct.C,
+			T: float64(tone),
+		}
 
-	// Generate darker tones by blending the seed with black.
-	tones[70] = blendColor(seed, black, 0.15)
-	tones[60] = blendColor(seed, black, 0.30)
-	tones[50] = blendColor(seed, black, 0.45)
-	tones[40] = blendColor(seed, black, 0.60)
-	tones[30] = blendColor(seed, black, 0.75)
-	tones[20] = blendColor(seed, black, 0.85)
-	tones[10] = blendColor(seed, black, 0.95)
+		// For very dark/light tones, reduce chroma to avoid impossible colors
+		if tone <= 20 || tone >= 90 {
+			newHct.C = seedHct.C * 0.8
+		}
+		if tone <= 10 || tone >= 95 {
+			newHct.C = seedHct.C * 0.5
+		}
+
+		tones[tone] = hctToRgb(newHct)
+	}
 
 	return TonalPalette{Tones: tones}
 }
 
-// classifyPalette analyzes a raw color palette and generates a full Material-style theme.
-func classifyPalette(palette []color.RGBA) ClassifiedTheme {
+// classifyPaletteMaterial3 analyzes a raw color palette using Material 3 principles
+func classifyPaletteMaterial3(palette []color.RGBA) ClassifiedTheme {
 	if len(palette) < 4 {
-		log.Fatal("ERROR: Palette must have at least 4 colors for Material generation.")
+		log.Fatal("ERROR: Palette must have at least 4 colors for Material 3 generation.")
 	}
 
+	// Convert all colors to HCT and calculate metrics
 	metrics := make([]colorMetrics, len(palette))
 	for i, c := range palette {
-		_, s, l := rgbToHsl(c)
-		metrics[i] = colorMetrics{Color: c, Luminance: l, Saturation: s, Index: i}
+		hct := rgbToHct(c)
+		vibrancy := calculateVibrancy(hct)
+		metrics[i] = colorMetrics{
+			Color:    c,
+			HCT:      hct,
+			Vibrancy: vibrancy,
+			Index:    i,
+		}
 	}
 
-	// Sort by saturation to find the most vibrant colors for key roles.
+	// Sort by vibrancy (Material 3's approach)
 	sort.SliceStable(metrics, func(i, j int) bool {
-		return metrics[i].Saturation > metrics[j].Saturation
+		return metrics[i].Vibrancy > metrics[j].Vibrancy
 	})
 
-	// Assign seed colors for Primary, Secondary, and Tertiary roles.
-	primarySeed := metrics[0].Color
-	secondarySeed := metrics[1].Color
-	tertiarySeed := metrics[2].Color
+	// Select Primary as the most vibrant color
+	primarySeed := metrics[0]
+
+	// Find Secondary with harmonious hue relationship to Primary
+	var secondarySeed colorMetrics
+	found := false
+	for i := 1; i < len(metrics); i++ {
+		if isHarmoniousHue(primarySeed.HCT.H, metrics[i].HCT.H) {
+			secondarySeed = metrics[i]
+			found = true
+			break
+		}
+	}
+	if !found {
+		// Fallback to second most vibrant if no harmonious hue found
+		secondarySeed = metrics[1]
+	}
+
+	// Find Tertiary that's different from both Primary and Secondary
+	var tertiarySeed colorMetrics
+	for i := 1; i < len(metrics); i++ {
+		if metrics[i].Index != secondarySeed.Index {
+			hue := metrics[i].HCT.H
+			primaryDist := calculateHueDistance(primarySeed.HCT.H, hue)
+			secondaryDist := calculateHueDistance(secondarySeed.HCT.H, hue)
+
+			// Ensure it's sufficiently different from both Primary and Secondary
+			if primaryDist > 60 && secondaryDist > 60 {
+				tertiarySeed = metrics[i]
+				found = true
+				break
+			}
+		}
+	}
+	if !found {
+		tertiarySeed = metrics[2] // Fallback
+	}
+
+	// Find a low-chroma color for Neutral
+	var neutralSeed colorMetrics
+	sort.SliceStable(metrics, func(i, j int) bool {
+		return metrics[i].HCT.C < metrics[j].HCT.C // Sort by chroma (ascending)
+	})
+
 	usedIndices := map[int]bool{
-		metrics[0].Index: true,
-		metrics[1].Index: true,
-		metrics[2].Index: true,
+		primarySeed.Index:   true,
+		secondarySeed.Index: true,
+		tertiarySeed.Index:  true,
 	}
 
-	// Find a low-saturation color for the Neutral seed from the remaining colors.
-	var neutralSeed color.RGBA
-	sort.SliceStable(metrics, func(i, j int) bool {
-		return metrics[i].Saturation < metrics[j].Saturation
-	})
 	for _, m := range metrics {
 		if !usedIndices[m.Index] {
-			neutralSeed = m.Color
+			neutralSeed = m
 			break
 		}
 	}
 
-	// Generate the full tonal palettes from our chosen seed colors.
-	primaryPalette := generateTonalPalette(primarySeed)
-	secondaryPalette := generateTonalPalette(secondarySeed)
-	tertiaryPalette := generateTonalPalette(tertiarySeed)
-	neutralPalette := generateTonalPalette(neutralSeed)
+	// Generate tonal palettes using HCT color space
+	primaryPalette := generateTonalPaletteHct(primarySeed.HCT)
+	secondaryPalette := generateTonalPaletteHct(secondarySeed.HCT)
+	tertiaryPalette := generateTonalPaletteHct(tertiarySeed.HCT)
+	neutralPalette := generateTonalPaletteHct(neutralSeed.HCT)
 
-	// Assemble the final theme based on Material 3 dark theme conventions.
+	// Assemble the final theme based on Material 3 dark theme specifications
 	return ClassifiedTheme{
 		Primary:   primaryPalette,
 		Secondary: secondaryPalette,
 		Tertiary:  tertiaryPalette,
 		Neutral:   neutralPalette,
 
-		Surface:          neutralPalette.Tones[10],
-		SurfaceVariant:   neutralPalette.Tones[30],
-		OnSurface:        primaryPalette.Tones[90],
-		OnSurfaceVariant: neutralPalette.Tones[80],
-		PrimaryFixed:     primaryPalette.Tones[90],
-		OnPrimaryFixed:   primaryPalette.Tones[10],
+		// Material 3 dark surface colors
+		Surface:          neutralPalette.Tones[6],  // Very dark neutral
+		SurfaceVariant:   neutralPalette.Tones[30], // Slightly lighter
+		OnSurface:        neutralPalette.Tones[90], // Light text on dark surface
+		OnSurfaceVariant: neutralPalette.Tones[80], // Secondary text
+		PrimaryFixed:     primaryPalette.Tones[90], // Fixed primary for consistency
+		OnPrimaryFixed:   primaryPalette.Tones[10], // Text on fixed primary
 	}
 }
 
@@ -255,8 +419,8 @@ func buildTemplates(cmd *cobra.Command, args []string) {
 		}
 		fmt.Printf("\nProcessing templates for monitor: %s\n", monitorData.Monitor)
 
-		// Classify the raw palette into our new structured theme.
-		classifiedTheme := classifyPalette(monitorData.Theme.Palletes)
+		// Use Material 3 classification instead of simple saturation sorting
+		classifiedTheme := classifyPaletteMaterial3(monitorData.Theme.Palletes)
 
 		templateData := struct {
 			Monitor string
