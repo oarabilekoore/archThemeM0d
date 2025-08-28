@@ -56,7 +56,7 @@ type colorMetrics struct {
 var templateFillCmd = &cobra.Command{
 	Use:   "build",
 	Short: "build - fill the templates provided with theme data for use.",
-	Run:   buildTemplates,
+	Run:   BuildTemplates,
 }
 
 func init() {
@@ -350,7 +350,7 @@ func classifyPaletteMaterial3(palette []color.RGBA) ClassifiedTheme {
 	}
 }
 
-func buildTemplates(cmd *cobra.Command, args []string) {
+func BuildTemplates(cmd *cobra.Command, args []string) {
 	themeFilePath := filepath.Join(homeDir, themeFileDir)
 
 	if _, err := os.Stat(themeFilePath); err != nil {
