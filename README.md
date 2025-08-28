@@ -634,10 +634,5 @@ This project is under the MIT License.
 - colorthief-go for color extraction
 - Cobra CLI framework
 - The Hyprland community (I use arch btw)
-- React and the modern web ecosystem
 
 ---
-
-**Made with ❤️ by Oarabile Koore**
-
-*Join the community of Arch users creating beautiful, cohesive desktop experiences!*
