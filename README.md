@@ -634,5 +634,3 @@ This project is under the MIT License.
 - colorthief-go for color extraction
 - Cobra CLI framework
 - The Hyprland community (I use arch btw)
-
----
