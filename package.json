@@ -1,1 +1,5 @@
-{"dependencies": {}}
+{
+  "dependencies": {
+    "lucide-react": "^0.542.0"
+  }
+}
