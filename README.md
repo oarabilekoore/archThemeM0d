@@ -4,7 +4,7 @@
   <img src="archThemeM0d.png" alt="ArchThemeM0d Logo" width="200" />
 </div>
 <div align="center">
-  <em>ArchThemeM0d is a dynamic theming engine for Arch Linux with Hyprland that automatically generates stunning, cohesive application themes directly from your current wallpaper.</em>
+  ArchThemeM0d is a dynamic theming engine for Arch Linux with Hyprland that automatically generates stunning, cohesive application themes directly from your current wallpaper.
 </div>
 
 ## Table of Contents
