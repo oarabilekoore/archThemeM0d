@@ -409,6 +409,9 @@ func BuildTemplates(cmd *cobra.Command, args []string) {
 			// Return a bright pink for debugging if a tone is missing.
 			return color.RGBA{R: 255, G: 0, B: 255, A: 255}
 		},
+		"replace": func(s, old, new string) string {
+			return strings.Replace(s, old, new, -1)
+		},
 	}
 
 	for _, monitorData := range allMonitorsData {
@@ -463,6 +466,7 @@ func BuildTemplates(cmd *cobra.Command, args []string) {
 			err = tmpl.Execute(outputFile, templateData)
 			if err != nil {
 				log.Printf("ERROR: Failed to execute template %s: %v", templateName, err)
+				return
 			}
 			outputFile.Close()
 		}

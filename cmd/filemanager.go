@@ -60,9 +60,9 @@ func ReadFile(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-// POST: /update?file=<filename>
+// POST: /write?file=<filename>
 // Body = new file contents
-func UpdateFile(w http.ResponseWriter, r *http.Request) {
+func SaveFile(w http.ResponseWriter, r *http.Request) {
 	fileName := r.URL.Query().Get("file")
 	if fileName == "" {
 		http.Error(w, "Missing 'file' parameter", http.StatusBadRequest)

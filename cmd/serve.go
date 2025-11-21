@@ -31,9 +31,12 @@ func StartThemeIDEServer(cmd *cobra.Command, args []string) {
 	mux.HandleFunc("/", handleRoot)
 	mux.Handle("/assets/", http.StripPrefix("/assets",
 		http.FileServer(http.Dir("../web/dist/assets"))))
+	mux.HandleFunc("/files", GetAllTemplateFiles)
+	mux.HandleFunc("/read", ReadFile)
+	mux.HandleFunc("/write", SaveFile)
 
 	fmt.Printf("Starting server at http://localhost%s\n", addr)
-	if err := http.ListenAndServe(addr, nil); err != nil {
+	if err := http.ListenAndServe(addr, mux); err != nil {
 		panic(err)
 	}
 

@@ -10,4 +10,13 @@ export default defineConfig({
       "@": new URL("./", import.meta.url).pathname,
     },
   },
+  server: {
+    // This makes the connection work!
+    proxy: {
+      // Any request starting with /files, /read, or /update goes to Go
+      "/files": "http://localhost:8080",
+      "/read": "http://localhost:8080",
+      "/update": "http://localhost:8080",
+    },
+  },
 });
