@@ -613,16 +613,13 @@ Calculates Material You style vibrancy score combining chroma and tone.
 - ✅ Template system
 - 🚧 Web-based IDE (Alpha)
 
-### Version 1.5 (Planned)
+### Version 2.0 (Planned)
 - 📋 Complete IDE implementation
 - 📋 Visual color picker
 - 📋 Template validation
 - 📋 Plugin system
-
-### Version 2.0 (Future)
+- 📋 After template build hooks
 - 📋 Support for other window managers
-- 📋 Advanced color harmony algorithms
-- 📋 Community template marketplace
 
 ## License
 
