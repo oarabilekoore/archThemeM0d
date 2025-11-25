@@ -6,8 +6,6 @@
 
 <p align="center">
 
-  <!-- Project Status -->
-  <img src="https://img.shields.io/badge/status-active-success?style=for-the-badge" />
 
   <!-- Arch Linux -->
   <img src="https://img.shields.io/badge/Arch%20Linux-supported-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white" />
@@ -21,18 +19,6 @@
   <!-- License -->
   <img src="https://img.shields.io/badge/license-MIT-yellow?style=for-the-badge" />
 
-  <!-- Build (Local Binary) -->
-  <img src="https://img.shields.io/badge/build-passing-brightgreen?style=for-the-badge&logo=go" />
-
-  <!-- Issues -->
-  <img src="https://img.shields.io/github/issues/oarabilekoore/archThemeM0d?style=for-the-badge" />
-
-  <!-- Stars -->
-  <img src="https://img.shields.io/github/stars/oarabilekoore/archThemeM0d?style=for-the-badge" />
-
-  <!-- PRs welcome -->
-  <img src="https://img.shields.io/badge/PRs-welcome-blueviolet?style=for-the-badge&logo=git" />
-
 </p>
 
 </div>
@@ -41,15 +27,13 @@
 ArchThemeM0d is a dynamic theming engine for Arch Linux with Hyprland that automatically generates stunning, cohesive application themes directly from your current wallpaper.
 </div>
 
----
-
 > **IMPORTANT**
 > **Project Scope Refactor:**
 > This project is shifting from a web-based tool to a native CLI/TUI workflow.
 > The Web IDE has been removed in favor of a Bubble Tea terminal interface.
 > Commands are being renamed to **create** (was *generate*) and **apply** (was *build*).
 
----
+
 
 # **Table of Contents**
 
@@ -68,7 +52,7 @@ ArchThemeM0d is a dynamic theming engine for Arch Linux with Hyprland that autom
 * [Contributing](#contributing)
 * [API Reference](#api-reference)
 
----
+
 
 # **Overview**
 
@@ -84,7 +68,7 @@ The system operates in a pipeline:
 4. **Generation:** Produces 13-step tonal ramps
 5. **Application:** Injects colors into templates and runs hooks
 
----
+
 
 # **Features**
 
@@ -96,7 +80,7 @@ The system operates in a pipeline:
 * 🪝 **Post-Build Hooks** *(In Development)*
 * 🚀 **Atomic `set` Command** *(In Development)*
 
----
+
 
 # **Real-World Usage**
 
@@ -110,7 +94,7 @@ This demonstrates:
 * Startup script integration
 * Dynamic theming in production environments
 
----
+
 
 # **Requirements**
 
@@ -126,7 +110,7 @@ This demonstrates:
 * `hyprctl`
 * `hyprpaper`
 
----
+
 
 # **Installation**
 
@@ -144,7 +128,7 @@ go build -o archThemeM0d main.go
 sudo mv archThemeM0d /usr/local/bin/
 ```
 
----
+
 
 # **Directory Structure**
 
@@ -158,7 +142,7 @@ Create the following after installation:
 └── currenttheme.tm0d   # Auto-generated palette
 ```
 
----
+
 
 # **Workflow & Commands**
 
@@ -177,7 +161,7 @@ archThemeM0d create
 * Classifies them using Material You rules
 * Writes palette → `currenttheme.tm0d`
 
----
+
 
 ## **apply**
 
@@ -194,7 +178,7 @@ archThemeM0d apply
 * Processes `.tmpl` files
 * Runs hooks
 
----
+
 
 ## **set** *(In Development)*
 
@@ -209,7 +193,7 @@ archThemeM0d set <path/to/image>
 * Runs `apply`
 * Executes hooks
 
----
+
 
 # **Template System**
 
@@ -246,7 +230,7 @@ Available under `.Theme`:
 {{ .Theme.Neutral | tone 10 }}
 ```
 
----
+
 
 # **Color System**
 
@@ -267,7 +251,7 @@ Available under `.Theme`:
 ### **Tone Levels**
 
 | Tone | Description |
-| ---- | ----------- |
+| - | -- |
 | 0    | Black       |
 | 10   | Very Dark   |
 | 20   | Dark        |
@@ -282,7 +266,7 @@ Available under `.Theme`:
 Score = (chroma / 100 * 0.7) + ((1 - abs(tone-50)/50) * 0.3)
 ```
 
----
+
 
 # **Hooks** *(In Development)*
 
@@ -300,7 +284,7 @@ pkill waybar
 waybar &
 ```
 
----
+
 
 # **TUI** *(In Development)*
 
@@ -310,7 +294,7 @@ Planned features:
 * Palette coherency checks (DeltaE)
 * ANSI palette preview
 
----
+
 
 # **Configuration**
 
@@ -335,7 +319,7 @@ Planned features:
 ]
 ```
 
----
+
 
 # **Troubleshooting**
 
@@ -351,7 +335,7 @@ Check hyprpaper:
 hyprctl hyprpaper listactive
 ```
 
----
+
 
 # **Contributing**
 
@@ -365,7 +349,7 @@ go test ./...
 go build -o archThemeM0d main.go
 ```
 
----
+
 
 # **API Reference**
 
@@ -404,5 +388,3 @@ type HCT struct {
     T float64
 }
 ```
-
----
