@@ -28,6 +28,7 @@ ArchThemeM0d is a dynamic theming engine for Arch Linux with Hyprland that autom
 </div>
 
 <br>
+    
 > **IMPORTANT**
 > **Project Scope Refactor:**
 > This project is shifting from a web-based tool to a native CLI/TUI workflow.
