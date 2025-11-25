@@ -1,120 +1,140 @@
-ArchThemeM0d
+
+# **ArchThemeM0d**
 
 <div align="center">
 <img src="archThemeM0d.png" alt="ArchThemeM0d Logo" width="200" />
+
+<p align="center">
+
+  <!-- Project Status -->
+  <img src="https://img.shields.io/badge/status-active-success?style=for-the-badge" />
+
+  <!-- Arch Linux -->
+  <img src="https://img.shields.io/badge/Arch%20Linux-supported-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white" />
+
+  <!-- Hyprland -->
+  <img src="https://img.shields.io/badge/Hyprland-required-00A6FF?style=for-the-badge&logo=hyprland&logoColor=white" />
+
+  <!-- Go -->
+  <img src="https://img.shields.io/badge/Go-1.21+-00ADD8?style=for-the-badge&logo=go&logoColor=white" />
+
+  <!-- License -->
+  <img src="https://img.shields.io/badge/license-MIT-yellow?style=for-the-badge" />
+
+  <!-- Build (Local Binary) -->
+  <img src="https://img.shields.io/badge/build-passing-brightgreen?style=for-the-badge&logo=go" />
+
+  <!-- Issues -->
+  <img src="https://img.shields.io/github/issues/oarabilekoore/archThemeM0d?style=for-the-badge" />
+
+  <!-- Stars -->
+  <img src="https://img.shields.io/github/stars/oarabilekoore/archThemeM0d?style=for-the-badge" />
+
+  <!-- PRs welcome -->
+  <img src="https://img.shields.io/badge/PRs-welcome-blueviolet?style=for-the-badge&logo=git" />
+
+</p>
+
 </div>
+
 <div align="center">
 ArchThemeM0d is a dynamic theming engine for Arch Linux with Hyprland that automatically generates stunning, cohesive application themes directly from your current wallpaper.
 </div>
 
+---
 
-<br>
-    
-[!IMPORTANT]
-Project Scope Refactor: This project is shifting from a web-based tool to a native CLI/TUI workflow. The Web IDE has been removed in favor of a Bubble Tea terminal interface. Commands are being renamed to create (was generate) and apply (was build).
+> **IMPORTANT**
+> **Project Scope Refactor:**
+> This project is shifting from a web-based tool to a native CLI/TUI workflow.
+> The Web IDE has been removed in favor of a Bubble Tea terminal interface.
+> Commands are being renamed to **create** (was *generate*) and **apply** (was *build*).
 
-Table of Contents
+---
 
-Overview
+# **Table of Contents**
 
-Features
+* [Overview](#overview)
+* [Features](#features)
+* [Real-World Usage](#real-world-usage)
+* [Requirements](#requirements)
+* [Installation](#installation)
+* [Workflow & Commands](#workflow--commands)
+* [Template System](#template-system)
+* [Color System](#color-system)
+* [Hooks (In Development)](#hooks-in-development)
+* [TUI (In Development)](#tui-in-development)
+* [Configuration](#configuration)
+* [Troubleshooting](#troubleshooting)
+* [Contributing](#contributing)
+* [API Reference](#api-reference)
 
-Real-World Usage
+---
 
-Requirements
+# **Overview**
 
-Installation
+ArchThemeM0d transforms your desktop experience by creating a unified color scheme across your entire system based on your wallpaper.
 
-Workflow & Commands
-
-Template System
-
-Color System
-
-Hooks (In Development)
-
-TUI (In Development)
-
-Configuration
-
-Troubleshooting
-
-Contributing
-
-API Reference
-
-Overview
-
-ArchThemeM0d transforms your desktop experience by creating a unified color scheme across all your applications based on your wallpaper.
-
-How It Works
+## **How It Works**
 
 The system operates in a pipeline:
 
-Ingestion: Takes a wallpaper (or set of wallpapers) via Hyprpaper
+1. **Ingestion:** Takes wallpapers from Hyprpaper
+2. **Analysis:** Extracts dominant colors and converts to HCT
+3. **Classification:** Assigns Material You roles
+4. **Generation:** Produces 13-step tonal ramps
+5. **Application:** Injects colors into templates and runs hooks
 
-Analysis: Extracts dominant colors and converts them to HCT (Hue, Chroma, Tone) space
+---
 
-Classification: Assigns colors to Material You roles (Primary, Secondary, etc.) based on vibrancy and hue harmony
+# **Features**
 
-Generation: Creates 13-step tonal ramps for every color role
+* 🎨 **Material Design 3 Logic**
+* 🧠 **Intelligent Color Classification**
+* 🖥️ **Monitor-Based Theming**
+* 🖼️ **Unified General Mode** *(Planned)*
+* 📟 **Interactive TUI** *(In Development)*
+* 🪝 **Post-Build Hooks** *(In Development)*
+* 🚀 **Atomic `set` Command** *(In Development)*
 
-Application: Injects these colors into user-defined templates and runs post-build hooks
+---
 
-Features
+# **Real-World Usage**
 
-🎨 Material Design 3 Logic: Generates vibrant, balanced palettes rather than simple hex extraction
+See a full Hyprland integration here:
 
-🧠 Intelligent Color Classification: Assigns colors to Primary, Secondary, Tertiary, and Neutral roles
+👉 **github.com/oarabilekoore/workspace57**
 
-🖥️ Monitor-Based Theming: Unique themes for each monitor based on its specific wallpaper
+This demonstrates:
 
-🖼️ Unified General Mode [Planned]: Create a single coherent theme from a collection of wallpapers with color coherency checks
+* Template structure (kitty, waybar, rofi)
+* Startup script integration
+* Dynamic theming in production environments
 
-📟 Interactive TUI [In Development]: A Bubble Tea-based terminal interface for selecting wallpapers and previewing palettes
+---
 
-🪝 Post-Build Hooks [In Development]: Automatically execute shell scripts (e.g., reloading Waybar/Kitty) after applying a theme
+# **Requirements**
 
-🚀 Atomic set Command [In Development]: Change wallpaper and theme in a single command
+### **System Requirements**
 
-Real-World Usage
+* Arch Linux
+* Hyprland
+* hyprpaper
+* Go 1.21+
 
-To see ArchThemeM0d integrated into a full production Hyprland environment, check out Workspace57:
+### **Dependencies**
 
-👉 github.com/oarabilekoore/workspace57
+* `hyprctl`
+* `hyprpaper`
 
-This repository demonstrates:
+---
 
-How to structure your templates (kitty, waybar, rofi)
+# **Installation**
 
-How to hook ArchThemeM0d into your startup scripts
+### **From Source**
 
-Practical examples of dotfile management with dynamic theming
-
-Requirements
-
-System Requirements
-
-OS: Arch Linux
-
-WM: Hyprland
-
-Wallpaper Manager: hyprpaper
-
-Go: Version 1.21+
-
-Dependencies
-
-hyprctl (part of Hyprland)
-
-hyprpaper for wallpaper management
-
-Installation
-
-From Source
-
+```bash
 # Clone the repository
-git clone [https://github.com/oarabilekoore/archThemeM0d](https://github.com/oarabilekoore/archThemeM0d)
+git clone https://github.com/oarabilekoore/archThemeM0d
 cd archThemeM0d
 
 # Build the binary
@@ -122,291 +142,236 @@ go build -o archThemeM0d main.go
 
 # Install to your PATH (optional)
 sudo mv archThemeM0d /usr/local/bin/
+```
 
+---
 
-Directory Structure
+# **Directory Structure**
 
-After installation, create the following directory structure in your home directory:
+Create the following after installation:
 
+```
 ~/Templates/ThemeM0d/
-├── Templates/          # Your .tmpl files go here
-├── Themes/             # Generated themes (auto-created)
-├── hooks/              # Post-build scripts (In Development)
-└── currenttheme.tm0d   # Generated palette data (auto-created)
+├── Templates/          # .tmpl files
+├── Themes/             # Generated themes
+├── hooks/              # Post-build scripts
+└── currenttheme.tm0d   # Auto-generated palette
+```
 
+---
 
-Workflow & Commands
+# **Workflow & Commands**
 
-create
+## **create**
 
-(Formerly generate)
+*(Formerly `generate`)*
 
-Extracts color palette from your current wallpaper(s).
-
+```bash
 archThemeM0d create
+```
 
+**What it does:**
 
-What it does:
+* Queries hyprpaper for active wallpapers
+* Extracts dominant colors
+* Classifies them using Material You rules
+* Writes palette → `currenttheme.tm0d`
 
-Queries hyprpaper for active wallpapers
+---
 
-Extracts 12 dominant colors per wallpaper using advanced algorithms
+## **apply**
 
-Classifies colors using Material You principles
+*(Formerly `build`)*
 
-Saves palette data to currenttheme.tm0d
-
-apply
-
-(Formerly build)
-
-Processes templates using the generated color palette.
-
+```bash
 archThemeM0d apply
+```
 
+**What it does:**
 
-What it does:
+* Reads palette data
+* Generates tonal palettes
+* Processes `.tmpl` files
+* Runs hooks
 
-Reads palette data from currenttheme.tm0d
+---
 
-Classifies colors into design roles using HCT color space
+## **set** *(In Development)*
 
-Generates complete tonal palettes (13 tones per role)
-
-Processes all .tmpl files in Templates directory
-
-Runs Hooks (See Hooks section)
-
-set [In Development]
-
-A one-shot command that orchestrates the entire pipeline.
-
+```bash
 archThemeM0d set <path/to/image>
+```
 
+**What it does:**
 
-What it does:
+* Sets wallpaper
+* Runs `create`
+* Runs `apply`
+* Executes hooks
 
-Sets the wallpaper via hyprpaper
+---
 
-Generates the palette (create)
+# **Template System**
 
-Applies templates (apply)
+Templates use **Go's text/template**.
 
-Runs hooks
+### **Data Structure**
 
-Template System
+Available under `.Theme`:
 
-Templates use Go's text/template syntax.
+* `.Primary`
+* `.Secondary`
+* `.Tertiary`
+* `.Neutral`
+* `.Surface`, `.OnSurface`, etc.
 
-Available Data Structure
+### **Functions**
 
-Your templates have access to the .Theme object:
+#### `toHex`
 
-Palettes: .Theme.Primary, .Theme.Secondary, .Theme.Tertiary, .Theme.Neutral
+```go
+{{ .Theme.Primary | tone 80 | toHex }}
+```
 
-Fixed Roles: .Theme.Surface, .Theme.OnSurface, .Theme.SurfaceVariant, etc.
+#### `toRGB`
 
-Template Functions
+```go
+{{ .Theme.Surface | toRGB }}
+```
 
-toHex
+#### `tone`
 
-Converts a color to hexadecimal format.
+```go
+{{ .Theme.Primary | tone 50 }}
+{{ .Theme.Neutral | tone 10 }}
+```
 
-{{.Theme.Primary | tone 80 | toHex}}
-// Output: #ff5722
+---
 
+# **Color System**
 
-toRGB [New]
+### **Design Principles**
 
-Converts a color to an integer array (useful for JSON/Chrome manifests).
+* HCT Color Space
+* Intelligent Classification
+* Hue Harmony
+* 13-tone ramps
 
-{{.Theme.Surface | toRGB}}
-// Output: [20, 20, 20]
+### **Color Roles**
 
+* **Primary**
+* **Secondary**
+* **Tertiary**
+* **Neutral**
 
-tone
+### **Tone Levels**
 
-Extracts a specific tone level (0-100) from a tonal palette.
+| Tone | Description |
+| ---- | ----------- |
+| 0    | Black       |
+| 10   | Very Dark   |
+| 20   | Dark        |
+| 50   | Medium      |
+| 80   | Light       |
+| 90   | Very Light  |
+| 100  | White       |
 
-{{.Theme.Primary | tone 50}}        // Mid-tone
-{{.Theme.Neutral | tone 10}}        // Very dark
+### **Advanced Classification Algorithm**
 
+```
+Score = (chroma / 100 * 0.7) + ((1 - abs(tone-50)/50) * 0.3)
+```
 
-Color System
+---
 
-Design Principles
+# **Hooks** *(In Development)*
 
-ArchThemeM0d follows Material You design principles with advanced color science:
+Store scripts in:
 
-HCT Color Space: Uses Hue, Chroma, Tone for perceptually uniform colors
+```
+~/Templates/ThemeM0d/hooks/
+```
 
-Intelligent Classification: Analyzes vibrancy, hue relationships, and chroma
+Example hook:
 
-Harmonious Relationships: Ensures complementary, triadic, and analogous color harmony
-
-13-Tone Ramps: Complete tonal palettes from dark (0) to light (100)
-
-Color Roles
-
-Primary: Most prominent brand/accent color (highest vibrancy)
-
-Secondary: Supporting color with harmonious hue relationship
-
-Tertiary: Additional accent for balance and variety
-
-Neutral: Low-chroma colors for backgrounds and surfaces
-
-Tone Levels
-
-Tone
-
-Usage
-
-Description
-
-0
-
-Black
-
-Pure black
-
-10
-
-Very Dark
-
-Dark surfaces, text on light
-
-20
-
-Dark
-
-Dark elements
-
-50
-
-Medium
-
-Disabled text
-
-80
-
-Light
-
-Seed color placement
-
-90
-
-Very Light
-
-Text on dark surfaces
-
-100
-
-White
-
-Pure white
-
-Advanced Classification Algorithm
-
-HCT Conversion: All colors converted to perceptually uniform HCT color space.
-
-Vibrancy Calculation: Material You formula combining chroma and tone.
-
-Score = (chroma / 100.0 * 0.7) + ((1.0 - abs(tone-50)/50.0) * 0.3)
-
-
-Hue Analysis: Identifies complementary (~180°), triadic (~120°), and analogous (~30°) relationships.
-
-Role Assignment: Assigns Primary to highest vibrancy, then searches for harmonious hues for Secondary/Tertiary.
-
-Hooks [In Development]
-
-You can add shell scripts to ~/Templates/ThemeM0d/hooks/ to automatically reload your applications after a theme is applied.
-
-Example reload-waybar.sh:
-
+```bash
 #!/bin/bash
 pkill waybar
 waybar &
+```
 
+---
 
-Note: Ensure scripts are executable (chmod +x).
+# **TUI** *(In Development)*
 
-TUI [In Development]
+Planned features:
 
-We are replacing the web-based IDE with a native Terminal User Interface (TUI) built with Bubble Tea.
+* Terminal wallpaper selector
+* Palette coherency checks (DeltaE)
+* ANSI palette preview
 
-Planned Features:
+---
 
-Visual File Picker: Browse and select wallpapers directly in the terminal
+# **Configuration**
 
-Coherency Check: Select multiple wallpapers for a unified theme; the system will warn you if their color palettes clash (high DeltaE distance)
+### **Multi-Monitor Example**
 
-Palette Preview: View the generated 13-tone ramps as ANSI color blocks before applying
-
-Configuration
-
-Multi-Monitor Setup
-
-ArchThemeM0d automatically handles multiple monitors via currenttheme.tm0d:
-
+```json
 [
   {
     "monitor": "DP-1",
     "theme": {
       "wallpaper_location": "/path/to/img1.jpg",
-      "palletes": [...]
+      "palletes": []
     }
   },
   {
     "monitor": "HDMI-A-1",
     "theme": {
       "wallpaper_location": "/path/to/img2.jpg",
-      "palletes": [...]
+      "palletes": []
     }
   }
 ]
+```
 
+---
 
-Troubleshooting
+# **Troubleshooting**
 
-"This only works with arch hyprland"
+### **"This only works with arch hyprland"**
 
-Cause: Not running in Hyprland environment
-Fix: Ensure HYPRLAND_INSTANCE_SIGNATURE environment variable is set.
+Ensure `HYPRLAND_INSTANCE_SIGNATURE` is set.
 
-"No Wallpapers Found"
+### **"No Wallpapers Found"**
 
-Cause: hyprpaper not running or no wallpapers set.
-Fix:
+Check hyprpaper:
 
+```bash
 hyprctl hyprpaper listactive
+```
 
+---
 
-Contributing
+# **Contributing**
 
-Development Setup
+### **Development Setup**
 
-# Clone and setup
-git clone [https://github.com/oarabilekoore/archThemeM0d](https://github.com/oarabilekoore/archThemeM0d)
+```bash
+git clone https://github.com/oarabilekoore/archThemeM0d
 cd archThemeM0d
 go mod tidy
-
-# Run tests
 go test ./...
-
-# Build
 go build -o archThemeM0d main.go
+```
 
+---
 
-API Reference
+# **API Reference**
 
-Data Structures
+### **ClassifiedTheme**
 
-ClassifiedTheme
-
-The master structure containing the generated theme data.
-
+```go
 type ClassifiedTheme struct {
     Primary   TonalPalette
     Secondary TonalPalette
@@ -420,23 +385,24 @@ type ClassifiedTheme struct {
     PrimaryFixed     color.RGBA
     OnPrimaryFixed   color.RGBA
 }
+```
 
+### **TonalPalette**
 
-TonalPalette
-
-Represents a color scale with tones ranging from 0 (Black) to 100 (White).
-
+```go
 type TonalPalette struct {
     Tones map[int]color.RGBA
 }
+```
 
+### **HCT**
 
-HCT
-
-Perceptual color space representation.
-
+```go
 type HCT struct {
-    H float64 // Hue (0-360)
-    C float64 // Chroma (0-100+)
-    T float64 // Tone (0-100)
+    H float64
+    C float64
+    T float64
 }
+```
+
+---
