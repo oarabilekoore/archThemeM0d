@@ -1,5 +1,5 @@
 
-# **ArchThemeM0d**
+# **archThemeM0d**
 
 <div align="center">
 <img src="archThemeM0d.png" alt="ArchThemeM0d Logo" width="200" />
